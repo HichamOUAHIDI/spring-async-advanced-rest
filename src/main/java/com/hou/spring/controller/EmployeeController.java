@@ -23,8 +23,18 @@ import com.hou.spring.mapper.EmployeeDTO;
 import com.hou.spring.service.EmailService;
 import com.hou.spring.service.EmployeeService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+/**
+ *  @Api describes the whole controller
+	@ApiOperation is used for description on a methods level
+	@ApiParam is used for method parameters
+ * */
+
+
 @RestController
-@RequestMapping("employees")
+@RequestMapping("/v2/employees")
+@Api(description = "Set of endpoints for Creating, Retrieving, Updating and Deleting of Employee.")
 public class EmployeeController {
 	
 	@Autowired
@@ -34,7 +44,7 @@ public class EmployeeController {
 	@Autowired
 	private ModelMapper mapper;
 	
-	
+	@ApiOperation("Returns list of all Employee in the system.")
 	 @GetMapping(value="/getAll")
 	 public List<EmployeeDTO> getAllEmployees() {
 		List<EmployeeDO> employeDO = employeeService.getAllEmployees();
@@ -43,12 +53,12 @@ public class EmployeeController {
 				.collect(Collectors.toList());
 		 return employeeDTO;
 	  }
-
+	@ApiOperation("Returns a specific employee by their identifier. 404 if does not exist.")
 	 @GetMapping(value = "getEmp/{employeeId}")
 	 public EmployeeDO getEmployee(@PathVariable(name="employeeId") Long empId) throws EntityNotFoundException {
 		 return employeeService.getEmployee(empId); 
 	 }
-	 
+	@ApiOperation("Creates a new employee.")
 	 @PostMapping(value = "AddEmp")
 	 public ResponseEntity<Object> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
 		 System.out.println("Entered in addEmployee with : "+employeeDTO);
@@ -59,7 +69,7 @@ public class EmployeeController {
 		 System.out.println("Exited from addEmployee");
 		 return new  ResponseEntity<>(HttpStatus.CREATED);
 	 }
-	 
+	 @ApiOperation("Deletes a employee from the system. 404 if the empolye's identifier is not found.")
 	 @DeleteMapping(value = "deleteEmp/{employeeId}")
 	    public void deleteEmployee(@PathVariable Long employeeId) throws EntityNotFoundException
 	    {
